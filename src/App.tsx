@@ -4,7 +4,7 @@ import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {checkToken, logout} from "./store/actions/auth";
 import {useAppDispatch, useAppSelector} from "./hooks";
 import {
-    Box,
+    Box,CircularProgress
     createTheme,
     CssBaseline,
     ThemeProvider
@@ -58,8 +58,8 @@ export var defaultNavList: INavItem[] = [
     {
         name: '',
         icon: <div/>,
-        path: '/directory',
-        validate: 'directory',
+        path: '/',
+        validate: '',
         component: <div/>
     },
 ]
@@ -68,7 +68,7 @@ const App: React.FC = () => {
     const location = useLocation()
     const dispatch = useAppDispatch()
     const {enqueueSnackbar} = useSnackbar()
-    const {user, navList, token, error} = useAppSelector(state => state.authReducer)
+    const {authState, isAuth, navList, error} = useAppSelector(state => state.authReducer)
 
     useEffect(() => {
         if (error?.message && error?.code !== 401) {
@@ -104,11 +104,14 @@ const App: React.FC = () => {
 
 
     const routes = () => {
-        let sToken = localStorage.getItem('token')
-        if (location.pathname === '/logout') {
-            dispatch(logout())
+        if (authState) {
+            return (
+                <Box className={'login-container'}>
+                    <CircularProgress/>
+                </Box>
+            )
         }
-        if (!token && !sToken) {
+        if (!authState && !isAuth) {
             return (
                 <Routes>
                     <Route path={'*'} element={<Navigate replace to={'login'}/>}/>
@@ -116,20 +119,18 @@ const App: React.FC = () => {
                 </Routes>
             )
         }
-        if (user) {
-            return (
-                <Routes>
-                    <Route path="login" element={<Navigate to={'/'}/>}/>
-                    <Route path="change_password" element={<Navigate to={'/'}/>}/>
-                    <Route path="/" element={<div/>}>
-                        {navigationList}
-                    </Route>
-                </Routes>
-            )
+        if (location.pathname === '/logout') {
+            dispatch(logout())
         }
         return (
-            <Box className={'login-container'}>
-            </Box>
+            <Routes>
+                <Route path="login" element={<Navigate to={'/'}/>}/>
+                <Route path="logout" element={<Navigate replace to={'login'}/>}/>
+                <Route path="change_password" element={<Navigate to={'/'}/>}/>
+                <Route path="/" element={<div/>}>
+                    {navigationList}
+                </Route>
+            </Routes>
         )
     }
 

@@ -1,38 +1,34 @@
-.App {
-  text-align: center;
+.logo_anim {
+  animation: rotate 2s linear infinite;
+  transform-origin: 47% 53%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+@keyframes rotate {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
+}
+
+//.login-back-image {
+//  width: 100vw;
+//  height: 100vh;
+//  background: url("/assets/login_back_2.jpg") no-repeat left;
+//  background-size: cover;
+//}
+
+.login-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //backdrop-filter: blur(3px) brightness(60%);
+  backdrop-filter: blur(2px) brightness(80%);
+  //filter: blur(2px);
 }

@@ -12,6 +12,8 @@ interface IAuthState {
     isLoading: boolean
     error: IApiError | null
     interceptor: number
+    isAuth: boolean
+    authState: boolean
 }
 
 const initialState: IAuthState = {
@@ -21,6 +23,8 @@ const initialState: IAuthState = {
     isLoading: false,
     error: null,
     interceptor: 0,
+    isAuth: false,
+    authState: true
 }
 
 export const authSlice = createSlice({
@@ -35,6 +39,11 @@ export const authSlice = createSlice({
             state.interceptor = payload.interceptor
             state.isLoading = false
             state.error = null
+            state.isAuth = true
+            state.authState = false
+        })
+        builder.addCase(checkToken.pending, (state) => {
+            state.authState = true
         })
         builder.addCase(checkToken.fulfilled, (state, {payload}) => {
             state.user = payload?.user || null
@@ -43,12 +52,16 @@ export const authSlice = createSlice({
             state.interceptor = payload?.interceptor || 0
             state.isLoading = false
             state.error = null
+            state.isAuth = true
+            state.authState = false
         })
         builder.addCase(logout.fulfilled, (state) => {
             state.token = null
             state.user = null
             state.isLoading = false
             state.error = null
+            state.isAuth = false
+            state.authState = false
         })
 
         builder.addMatcher(isFulfilled, (state) => {
@@ -65,8 +78,10 @@ export const authSlice = createSlice({
                 api.interceptors.request.eject(state.interceptor)
                 state.user = null
                 state.token = null
+                state.isAuth = false
             }
             state.isLoading = false
+            state.authState = false
             state.error = action.payload
         })
     }

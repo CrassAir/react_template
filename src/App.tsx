@@ -4,7 +4,7 @@ import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {checkToken, logout} from "./store/actions/auth";
 import {useAppDispatch, useAppSelector} from "./hooks";
 import {
-    Box,CircularProgress
+    Box,CircularProgress,
     createTheme,
     CssBaseline,
     ThemeProvider

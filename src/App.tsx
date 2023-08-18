@@ -98,8 +98,6 @@ const App: React.FC = () => {
         const newList = navList.map((navItem, index) => {
             if (index === 0 && navItem.path !== '/') nav = navItem.start_path
             return recursiveBuildNav(navItem)
-            // return <Route key={navItem.name} path={navItem.start_path + navItem.path} element={navItem.component}/>
-
         })
         if (nav !== '/') newList.push(<Route key={'redirect'} path="/" element={<Navigate to={nav}/>}/>)
         return newList

@@ -4,7 +4,7 @@ import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import {checkToken, logout} from "./store/actions/auth";
 import {useAppDispatch, useAppSelector} from "./hooks";
 import {
-    Box,CircularProgress,
+    Box, CircularProgress,
     createTheme,
     CssBaseline,
     ThemeProvider
@@ -49,18 +49,21 @@ const theme = createTheme({
 export interface INavItem {
     name: string
     icon: ReactElement
+    start_path: string
     path: string
-    validate: string
+    validate?: string
     component: ReactElement
+    children?: INavItem[]
 }
 
 export var defaultNavList: INavItem[] = [
     {
         name: '',
         icon: <div/>,
-        path: '/',
+        start_path: '',
+        path: '/:id?',
         validate: '',
-        component: <div/>
+        component: <div/>,
     },
 ]
 
@@ -80,23 +83,23 @@ const App: React.FC = () => {
         dispatch(checkToken())
     }, [])
 
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [location])
+    function recursiveBuildNav(navItem: INavItem) {
+        if (navItem.children && navItem.children.length > 0) {
+            const childs = navItem.children?.map(nav => recursiveBuildNav(nav))
+            return <Route key={navItem.name} path={navItem.start_path + navItem.path} element={navItem.component}>
+                {childs}
+            </Route>
+        }
+        return <Route key={navItem.name} path={navItem.start_path + navItem.path} element={navItem.component}/>
+    }
 
     const navigationList = useMemo(() => {
         let nav = '/'
         const newList = navList.map((navItem, index) => {
-            if (index === 0 && navItem.path !== '/') nav = navItem.path
-            return <Route
-                key={navItem.name} path={navItem.path}
-                element={
-                    navItem.component
-                }>
-                <Route path={':id'} element={
-                    navItem.component
-                }/>
-            </Route>
+            if (index === 0 && navItem.path !== '/') nav = navItem.start_path
+            return recursiveBuildNav(navItem)
+            // return <Route key={navItem.name} path={navItem.start_path + navItem.path} element={navItem.component}/>
+
         })
         if (nav !== '/') newList.push(<Route key={'redirect'} path="/" element={<Navigate to={nav}/>}/>)
         return newList

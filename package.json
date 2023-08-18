@@ -1,6 +1,7 @@
 {
   "name": "react_template",
   "version": "0.0001",
+  "homepage": "",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
